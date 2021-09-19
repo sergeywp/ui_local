@@ -28,6 +28,12 @@ server:
         port: 1091
         xsappJson: uimodule/webapp/xs-app.json
         destinations: []
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        backend:
+        - path: /Northwind.svc/
+          url: https://services.odata.org/V2/Northwind/
 builder:
   customTasks:
     -  name: ui5-task-zipper
@@ -35,3 +41,4 @@ builder:
        configuration:
          includeDependencies: false
          archiveName: uimodule
+
