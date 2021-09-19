@@ -1,0 +1,21 @@
+{
+  "generator-template-ui5-project": {
+    "projectname": "localUI",
+    "namespaceUI5": "demo.local.ui",
+    "platform": "SAP Launchpad service",
+    "viewtype": "XML",
+    "ui5libs": "Content delivery network (SAPUI5)",
+    "newdir": false,
+    "namespaceURI": "demo/local/ui",
+    "opa5pos": [
+      "Main"
+    ],
+    "opa5Journeys": [
+      "Main"
+    ],
+    "uimodules": [
+      "uimodule"
+    ],
+    "setupCompleted": true
+  }
+}

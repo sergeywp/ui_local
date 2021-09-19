@@ -1,0 +1,80 @@
+ID: localUI
+_schema-version: 3.2.0
+version: 0.0.1
+parameters:
+  enable-parallel-deployments: true
+modules:
+  - name: webapp_deployer
+    type: com.sap.application.content
+    path: deployer
+    requires:
+      - name: localUI_html5_repo_host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - name: uimodule
+          artifacts:
+            - dist/uimodule.zip
+          target-path: resources/
+  - name: localUIdestination-content
+    type: com.sap.application.content
+    build-parameters:
+      no-source: true
+    requires:
+      - name: localUI_uaa
+        parameters:
+          service-key:
+            name: localUI_uaa-key
+      - name: localUI_html5_repo_host
+        parameters:
+          service-key:
+            name: localUI_html5_repo_host-key
+      - name: localUI_destination
+        parameters:
+          content-target: true
+    parameters:
+      content:
+        instance:
+          existing_destinations_policy: update
+          destinations:
+            - Name: localUI_html5_repo_host
+              ServiceInstanceName: localUI_html5_repo_host
+              ServiceKeyName: localUI_html5_repo_host-key
+              sap.cloud.service: localUI.service
+            - Name: localUI_uaa
+              Authentication: OAuth2UserTokenExchange
+              ServiceInstanceName: localUI_uaa
+              ServiceKeyName: localUI_uaa-key
+              sap.cloud.service: localUI.service
+  - name: uimodule
+    type: html5
+    path: uimodule
+    build-parameters:
+      builder: custom
+      commands:
+        - npm run build:uimodule --prefix ..
+      supported-platforms: []
+resources:
+  - name: localUI_destination
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-plan: lite
+      service: destination
+      config:
+        HTML5Runtime_enabled: true
+        version: 1.0.0
+  - name: localUI_html5_repo_host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-plan: app-host
+      service: html5-apps-repo
+      config:
+        sizeLimit: 2
+  - name: localUI_uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service-plan: application
+      service: xsuaa
